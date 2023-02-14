@@ -89,3 +89,4 @@ class Crawl():
 
     def add_new_urls(self):
         for url in output['urls']:
+            pass

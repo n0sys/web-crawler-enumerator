@@ -1,7 +1,7 @@
 import sys
 import argparse
+import re
 from crawl import start
-
 
 if __name__ == "__main__":
     #print("""Web Crawler and Enumerator""")
@@ -36,4 +36,9 @@ if __name__ == "__main__":
         urls = args.file.readlines()
     else:
         urls = [args.url]
+    
+    # TODO: find better way to test for URL errors
+    for url in urls:
+        if re.match('https?\:\/\/',url) == None:
+            sys.exit('URLs must be in format http(s)://xxxx.xxx')
     start(urls, settings)

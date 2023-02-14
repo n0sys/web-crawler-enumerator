@@ -4,7 +4,7 @@ from crawl import start
 
 
 if __name__ == "__main__":
-    print("""Web Crawler and Enumerator""")
+    #print("""Web Crawler and Enumerator""")
     parser = argparse.ArgumentParser(prog= 'wce', 
             description='Web Enum Made Ez', 
             )
@@ -15,19 +15,22 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--crawl', action='store_true', help='Turns on web crawling, tells the script to enumerate found URLs from same domain')
     parser.add_argument('-np', '--no-parameters',action='store_true', help='No parameters would be output')
     parser.add_argument('-nc', '--no-comments',action='store_true', help='No comments would be output')
-    parser.add_argument('-nu', '--no-urls',action='store_true', help='No URLs would be output')
-    parser.add_argument('-ni', '--no-inputs',action='store_true', help='No hidden inputs would be output')
+    #parser.add_argument('-nu', '--no-urls',action='store_true', help='No URLs would be output')
+    parser.add_argument('-nf', '--no-forms',action='store_true', help='No hidden forms would be output')
     args = parser.parse_args()
 
     if args.url != None and args.file != None:
-        sys.exit('Either input a url or a file')
+        sys.exit('Error: either input a url or a file')
     
-    #TODO: make settings as dict
+    if args.url == None and args.file == None:
+        parser.print_help()
+        sys.exit()
+        
     settings: dict = {'crawl':args.crawl,
         'no-params':args.no_parameters,
         'no-comments':args.no_comments,
-        'no-urls': args.no_urls,
-        'no-inputs': args.no_inputs}
+        #'no-urls': args.no_urls,
+        'no-forms': args.no_forms}
     urls: list = []
     if args.url == None:
         urls = args.file.readlines()

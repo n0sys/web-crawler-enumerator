@@ -38,7 +38,8 @@ def start(urls, settings):
             request.add_new_urls()
         # Add delay?
         # time.sleep(settings['sleep'])
-        print(output)
+    print(output)
+    print(history)
 
 # Get the domains from user's input and store them in global variable 'domains'
 def get_domains_from_urls(urls):
@@ -129,20 +130,36 @@ class Crawl():
         for url in urls:
             # TODO: generalize tests to: url is a relative path, url is data, else continue 
             # Remove None values
-            if url == None:
-                continue
-            # Remove empty value urls
-            if url == '\\n' or url == '' :
-                continue
-            # removes urls that start with a '#'
-            if url[0] == '#':
+            if url == None or url == '':
                 continue
             # TODO: better solution to detect relative links
-            # Assuming that only relative links start with a '/'
             # adds protocol and domain to relative links
-            if url[:4] != 'data' and re.match("https?\:\/\/[^.]+\.[^.]+",url) == None:
-                url = self.protocol + '://' + self.domain + '/' + self.relative_path + '/' + url
-            clean_urls.append(url)
+            # Matches urls that start with \\' when in html they are written as src='https://'
+            if re.match("\\\\\'",url) != None:
+                url = url.replace("\\'","")
+            # matches http(s):// urls
+            if re.match("https?\:\/\/[^.]+\.[^.]+",url) != None:
+                clean_urls.append(url)
+                continue
+            # Matches data: urls
+            if url[:4] == 'data':
+                clean_urls.append(url)
+                continue
+            # Matches ../ and ./
+            if re.match("\.\.?\/", url) != None:
+                url = self.url + url
+                clean_urls.append(url)
+                continue
+            # Matches /directory and not //web
+            if re.match("\/[^/]", url) != None:
+                url = self.url + url
+                clean_urls.append(url)
+                continue
+            # Matches //
+            if re.match("\/\/", url) != None:
+                url = self.protocol + ':' + url
+                clean_urls.append(url)
+                continue
         return clean_urls
 
     #Get the domain of a given URL

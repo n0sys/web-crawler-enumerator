@@ -109,14 +109,16 @@ class Crawl():
         clean_url_buffer = self.get_clean_urls(url_buffer)
         output['urls']+= clean_url_buffer
 
-    # TODO: remove duplicate values from parameters
     # Format json: parameters={"https://google.com/asd":{"?i=":["asd","sd"],"?sd=":["sdd","qwee","sda"]}}
     def get_parameters(self):
+        # if parameters.json is not empty, load content 
         if os.stat(".wce/parameters.json").st_size != 0:
             with open(".wce/parameters.json") as parameters_file:
                 parameters_json = json.load(parameters_file)
         else:
             parameters_json = {}
+        # extract parameters and save them to parameters json file
+        # TODO: remove duplicate values from parameters
         for url in output['urls']:
             if '?' not in url:
                 continue
@@ -126,10 +128,12 @@ class Crawl():
                 parameters_json[clean_url] = {}
             for parameter in parameters.split('&'):
                 parameter_split = parameter.split('=')
+                # initiate parameter if it didnt exist in page's dictionary
                 if parameter_split[0] not in parameters_json[clean_url]:
-                    parameters_json[clean_url][parameter_split[0]] = [parameter_split[1]]
-                else:
-                    parameters_json[clean_url][parameter_split[0]].append(parameter_split[1])     
+                    parameters_json[clean_url][parameter_split[0]] = []
+                # add value to the parameter if the value doesnt already exist
+                if parameter_split[1] not in parameters_json[clean_url][parameter_split[0]]:
+                    parameters_json[clean_url][parameter_split[0]].append(parameter_split[1])    
         with open('.wce/parameters.json', 'w') as parameters_file:
             json.dump(parameters_json, parameters_file)
 

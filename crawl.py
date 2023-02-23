@@ -1,9 +1,12 @@
 import requests
 from bs4 import BeautifulSoup, Comment
 import re
+import json
+import os
 
 def start(urls, settings): 
     # Define global variables used to store collected data
+    # TODO: check local storage for use instead of global vars
     global urls_list
     global history
     global output
@@ -11,7 +14,7 @@ def start(urls, settings):
     domains = []
     history = []
     urls_list = urls
-    output = {'parameters':[], 'comments':[], 'urls':[], 'hidden_forms':[]}
+    output = {'comments':[], 'urls':[], 'hidden_forms':[]}
     get_domains_from_urls(urls)
     # Crawl until no new URLs are found
     i=0
@@ -70,9 +73,8 @@ class Crawl():
         # Gets all <form> urls
         for form_element in self.soup.find_all('form'):
             form_element_url: str = form_element.get('action')
-            if form_element_url not in output['urls']:
+            if form_element_url not in url_buffer:
                 url_buffer.append(form_element_url)
-            # Store forms in output['hidden_forms']
             # TODO: haven't checked yet if input is hidden or not | store input values and not just URLs
             if not self.no_forms:
                 if form_element_url not in output['hidden_forms']:
@@ -80,39 +82,56 @@ class Crawl():
         # Gets all <a> urls
         for a_element in self.soup.find_all('a'):
             a_element_url: str = a_element.get('href')
-            if a_element_url not in output['urls']:
+            if a_element_url not in url_buffer:
                 url_buffer.append(a_element.get('href'))
         # Gets all <link> urls
         for link_element in self.soup.find_all('link'):
             link_element_url: str = link_element.get('href')
-            if link_element_url not in output['urls']:
+            if link_element_url not in url_buffer:
                 url_buffer.append(link_element_url)
         # Gets all <script> urls
         for script_element in self.soup.find_all('script'):
             script_element_url: str = script_element.get('src')
-            if script_element_url not in output['urls']:
+            if script_element_url not in url_buffer:
                 url_buffer.append(script_element_url)
         # Gets all <img> urls
         for img_element in self.soup.find_all('img'):
             img_element_url: str = img_element.get('src')
-            if img_element_url not in output['urls']:
+            if img_element_url not in url_buffer:
                 url_buffer.append(img_element_url)
         # Gets all <svg> urls
         for svg_element in self.soup.find_all('svg'):
             svg_element_url: str = svg_element.get('src')
-            if svg_element_url not in output['urls']:
+            if svg_element_url not in url_buffer:
                 url_buffer.append(svg_element_url)
         #TODO: check for more url types
         # clean url buffer - bad values: None, # 
         clean_url_buffer = self.get_clean_urls(url_buffer)
         output['urls']+= clean_url_buffer
 
-    # TODO: add info on where the parameters came from
+    # TODO: remove duplicate values from parameters
+    # Format json: parameters={"https://google.com/asd":{"?i=":["asd","sd"],"?sd=":["sdd","qwee","sda"]}}
     def get_parameters(self):
+        if os.stat(".wce/parameters.json").st_size != 0:
+            with open(".wce/parameters.json") as parameters_file:
+                parameters_json = json.load(parameters_file)
+        else:
+            parameters_json = {}
         for url in output['urls']:
-            if '?' in url:
-                parameters: str = url.split('?')[1].split('#')[0]
-                output['parameters'] += parameters.split('&')
+            if '?' not in url:
+                continue
+            clean_url: str = self.get_clean_page(url)
+            parameters: str = url.split('?')[1].split('#')[0]
+            if clean_url not in parameters_json:
+                parameters_json[clean_url] = {}
+            for parameter in parameters.split('&'):
+                parameter_split = parameter.split('=')
+                if parameter_split[0] not in parameters_json[clean_url]:
+                    parameters_json[clean_url][parameter_split[0]] = [parameter_split[1]]
+                else:
+                    parameters_json[clean_url][parameter_split[0]].append(parameter_split[1])     
+        with open('.wce/parameters.json', 'w') as parameters_file:
+            json.dump(parameters_json, parameters_file)
 
     def add_new_urls(self):
         for url in output['urls']:
@@ -128,7 +147,6 @@ class Crawl():
     def get_clean_urls(self, urls):
         clean_urls: list = []
         for url in urls:
-            # TODO: generalize tests to: url is a relative path, url is data, else continue 
             # Remove None values
             if url == None or url == '':
                 continue
@@ -160,8 +178,16 @@ class Crawl():
                 url = self.protocol + ':' + url
                 clean_urls.append(url)
                 continue
+            #TODO: test if URL contains // other that protocol's one
         return clean_urls
 
+    # Removes parameters and makes sure the URLs are written the same
+    def get_clean_page(self, url):
+        url_without_parameters = self.get_url_without_parameters(url)
+        if url_without_parameters[-1] == '/':
+            return url_without_parameters[:-1]
+        return url_without_parameters
+       
     #Get the domain of a given URL
     def get_domain_from_url(self, url):
         return url.split('/')[2].split('?')[0].split('#')[0]

@@ -1,6 +1,7 @@
 import sys
 import argparse
 import re
+import os
 from crawl import start
 
 if __name__ == "__main__":
@@ -41,4 +42,11 @@ if __name__ == "__main__":
     for url in urls:
         if re.match('https?\:\/\/[^.]+\.[^.]+',url) == None:
             sys.exit('URLs must be in format http(s)://xxxx.xxx')
+    
+    # Initiate local storage directory
+    if '.wce' not in os.listdir():
+        os.mkdir('.wce')
+    # Initiate clean parameters.json file 
+    with open(".wce/parameters.json","w") as parameters_file:
+        parameters_file.write("")
     start(urls, settings)

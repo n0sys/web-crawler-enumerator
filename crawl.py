@@ -19,9 +19,9 @@ def start(urls, settings):
     # Crawl until no new URLs are found
     i=0
     while len(urls_list) != 0:
-        print(i)
-        i+=1
-        print(urls_list[0]+'\n')
+        #print(i)
+        #i+=1
+        #print(urls_list[0]+'\n')
         request = Crawl(urls_list[0].strip(),
             settings['no-forms']
             )
@@ -41,8 +41,8 @@ def start(urls, settings):
             request.add_new_urls()
         # Add delay?
         # time.sleep(settings['sleep'])
-    print(output)
-    print(history)
+    # TODO: continue with Output results
+    output_results()
 
 # Get the domains from user's input and store them in global variable 'domains'
 def get_domains_from_urls(urls):
@@ -50,6 +50,34 @@ def get_domains_from_urls(urls):
         domain: str = url.split('/')[2].split('?')[0].split('#')[0]
         if domain not in domains:
             domains.append(domain)
+
+def output_results():
+    # Parameters
+    with open(".wce/parameters.json") as parameters_file:
+        parameters_json = json.load(parameters_file)
+    print("Parameters found:")
+    for url in parameters_json.keys():
+        print("Parameters found in " + url +':')
+        for urls_parameter in parameters_json[url]:
+            print('+ ?' + urls_parameter + '=')
+            for urls_parameter_value in parameters_json[url][urls_parameter]:
+                print(urls_parameter_value, end="\t ")
+            print("")
+    print("----------------------")
+    # Comments
+    print("Comments found:")
+    for comment in output['comments']:
+        print('+',comment)
+    print("----------------------")
+    # URLs 
+    print("URLs found:")
+    for url in output['urls']:
+        print('+',url)
+    print("----------------------")
+    # Forms
+    print("Hidden forms found:")
+    for form in output['hidden_forms']:
+        print('+',form)
 
 class Crawl():
     #TODO: change self.url if server returns 302 and change allow redirects to True in self.session
@@ -153,6 +181,9 @@ class Crawl():
         for url in urls:
             # Remove None values
             if url == None or url == '':
+                continue
+            # Remove values that are already added 
+            if url in output['urls']:
                 continue
             # TODO: better solution to detect relative links
             # adds protocol and domain to relative links

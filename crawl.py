@@ -55,29 +55,36 @@ def output_results():
     # Parameters
     with open(".wce/parameters.json") as parameters_file:
         parameters_json = json.load(parameters_file)
-    print("Parameters found:")
+    print("\n----------------------")
+    print("Parameters found")
+    print("----------------------")
     for url in parameters_json.keys():
+        print("")
         print("Parameters found in " + url +':')
         for urls_parameter in parameters_json[url]:
             print('+ ?' + urls_parameter + '=')
             for urls_parameter_value in parameters_json[url][urls_parameter]:
                 print(urls_parameter_value, end="\t ")
             print("")
-    print("----------------------")
     # Comments
+    print("\n----------------------")
     print("Comments found:")
+    print("----------------------")
     for comment in output['comments']:
         print('+',comment)
-    print("----------------------")
     # URLs 
+    print("\n----------------------")
     print("URLs found:")
+    print("----------------------")
     for url in output['urls']:
         print('+',url)
-    print("----------------------")
     # Forms
+    print("\n----------------------")
     print("Hidden forms found:")
+    print("----------------------")
     for form in output['hidden_forms']:
         print('+',form)
+    print("")
 
 class Crawl():
     #TODO: change self.url if server returns 302 and change allow redirects to True in self.session

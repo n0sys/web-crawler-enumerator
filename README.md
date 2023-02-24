@@ -6,7 +6,7 @@ Input the URLs you want to search and the tool will output for you the parameter
 
 ## TODO
 - Add info to where comments came from (json?)
-- Display proper output
+- Remove global various (to local storage?) / Restructure code
  
 ---
 

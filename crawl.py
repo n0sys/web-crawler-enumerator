@@ -14,14 +14,11 @@ def start(urls, settings):
     domains = []
     history = []
     urls_list = urls
-    output = {'comments':[], 'urls':[], 'hidden_forms':[]}
+    output = {'urls':[], 'hidden_forms':[]}
     get_domains_from_urls(urls)
     # Crawl until no new URLs are found
-    i=0
+    # TODO: issue in output urls (found when visiting http://localhost/dashboard)
     while len(urls_list) != 0:
-        #print(i)
-        #i+=1
-        #print(urls_list[0]+'\n')
         request = Crawl(urls_list[0].strip(),
             settings['no-forms']
             )
@@ -32,7 +29,6 @@ def start(urls, settings):
         #TODO: add js web suppport - if site requires js, wont load with requests library
         request.get_urls()
         # removes from output values that could cause errors - eg: None value
-        #clean_output_urls()
         if not settings['no-params']:
             request.get_parameters()
         history.append(urls_list[0].strip())
@@ -41,7 +37,6 @@ def start(urls, settings):
             request.add_new_urls()
         # Add delay?
         # time.sleep(settings['sleep'])
-    # TODO: continue with Output results
     output_results()
 
 # Get the domains from user's input and store them in global variable 'domains'
@@ -59,19 +54,25 @@ def output_results():
     print("Parameters found")
     print("----------------------")
     for url in parameters_json.keys():
-        print("")
         print("Parameters found in " + url +':')
         for urls_parameter in parameters_json[url]:
             print('+ ?' + urls_parameter + '=')
             for urls_parameter_value in parameters_json[url][urls_parameter]:
                 print(urls_parameter_value, end="\t ")
             print("")
+        print("")
     # Comments
     print("\n----------------------")
     print("Comments found:")
     print("----------------------")
-    for comment in output['comments']:
-        print('+',comment)
+    with open(".wce/comments.json") as comments_file:
+        comments_json = json.load(comments_file)
+    for url in comments_json.keys():
+        if comments_json[url] == []:
+            continue
+        print("Comments found in "+ url + ':')
+        for comment in comments_json[url]:
+            print('+ '+ comment)
     # URLs 
     print("\n----------------------")
     print("URLs found:")
@@ -97,11 +98,19 @@ class Crawl():
         self.soup = BeautifulSoup(str(self.session.content), 'html.parser')
         self.no_forms = no_forms
     
-    # TODO: add info on where the comment came from
     # TODO: add /* */ comments 
     def get_comments(self):
+        if os.stat(".wce/comments.json").st_size != 0:
+            with open(".wce/comments.json") as comments_file:
+                comments_json = json.load(comments_file)
+        else:
+            comments_json = {}
+        if self.url not in comments_json:
+            comments_json[self.url] = []
         for comment in self.soup.find_all(string=lambda text: isinstance(text, Comment)):
-            output['comments'].append(comment.extract())
+            comments_json[self.url].append(comment.extract())
+        with open('.wce/comments.json', 'w') as comments_file:
+            json.dump(comments_json, comments_file)
 
     def get_urls(self):
         url_buffer: list = []
@@ -153,7 +162,6 @@ class Crawl():
         else:
             parameters_json = {}
         # extract parameters and save them to parameters json file
-        # TODO: remove duplicate values from parameters
         for url in output['urls']:
             if '?' not in url:
                 continue
@@ -186,7 +194,7 @@ class Crawl():
     def get_clean_urls(self, urls):
         clean_urls: list = []
         for url in urls:
-            # Test when a url matches any of the conditions in the if's | If yes add url if not ignore it
+            # This value is used to check if a URL is good or not | If its true then add url to output['urls'] if not ignore it
             is_good_url: bool = False
             # Remove None values
             if url == None or url == '':

@@ -40,7 +40,7 @@ if __name__ == "__main__":
     
     # TODO: find better way to test for URL errors
     for url in urls:
-        if re.match('https?\:\/\/[^.]+\.[^.]+',url) == None:
+        if re.match('https?\:\/\/[^.]',url) == None:
             sys.exit('URLs must be in format http(s)://xxxx.xxx')
     
     # Initiate local storage directory
@@ -49,4 +49,6 @@ if __name__ == "__main__":
     # Initiate clean parameters.json file 
     with open(".wce/parameters.json","w") as parameters_file:
         parameters_file.write("")
+    with open(".wce/comments.json","w") as comments_file:
+        comments_file.write("")
     start(urls, settings)

@@ -186,41 +186,42 @@ class Crawl():
     def get_clean_urls(self, urls):
         clean_urls: list = []
         for url in urls:
+            # Test when a url matches any of the conditions in the if's | If yes add url if not ignore it
+            is_good_url: bool = False
             # Remove None values
             if url == None or url == '':
                 continue
-            # Remove values that are already added 
-            if url in output['urls']:
-                continue
             # TODO: better solution to detect relative links
             # adds protocol and domain to relative links
-            # Matches urls that start with \\' when in html they are written as src='https://'
+            # Matches urls that start with \\' This happens when they are written as src='https://'
             if re.match("\\\\\'",url) != None:
                 url = url.replace("\\'","")
+                is_good_url = True
             # matches http(s):// urls
             if re.match("https?\:\/\/[^.]+\.[^.]+",url) != None:
-                clean_urls.append(url)
-                continue
+                is_good_url = True
             # Matches data: urls
             if url[:4] == 'data':
-                clean_urls.append(url)
-                continue
+                is_good_url = True
             # Matches ../ and ./
             if re.match("\.\.?\/", url) != None:
                 url = self.url + url
-                clean_urls.append(url)
-                continue
+                is_good_url = True
             # Matches /directory and not //web
             if re.match("\/[^/]", url) != None:
                 url = self.url + url
-                clean_urls.append(url)
-                continue
+                is_good_url = True
             # Matches //
             if re.match("\/\/", url) != None:
                 url = self.protocol + ':' + url
-                clean_urls.append(url)
+                is_good_url = True
+            # url is bad, go to the next one
+            if is_good_url == False:
                 continue
-            #TODO: test if URL contains // other that protocol's one
+            # if the url is good and its not already in output['urls'] append it
+            if url not in output['urls']:
+                clean_urls.append(url)
+            #TODO: test if URL contains '//' other than protocol's ones
         return clean_urls
 
     # Removes parameters and makes sure the URLs are written the same

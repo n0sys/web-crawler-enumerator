@@ -6,7 +6,8 @@ Input the URLs you want to search and the tool will output for you the parameter
 
 ## TODO
 - Fix relative urls  
-- Remove global values (to local storage?) / Restructure code
+- Remove global values (to local storage?) 
+- Restructure code
  
 ---
 

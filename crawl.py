@@ -9,12 +9,11 @@ def start(urls, settings):
     # TODO: check local storage for use instead of global vars
     global urls_list
     global history
-    global output
     global domains
     domains = []
     history = []
     urls_list = urls
-    output = {'urls':[], 'hidden_forms':[]}
+    # Get the domains from user's input and store them in global variable 'domains'
     get_domains_from_urls(urls)
     # Crawl until no new URLs are found
     # TODO: issue in output urls (found when visiting http://localhost/dashboard)
@@ -62,11 +61,11 @@ def output_results():
             print("")
         print("")
     # Comments
+    with open(".wce/comments.json") as comments_file:
+        comments_json = json.load(comments_file)
     print("\n----------------------")
     print("Comments found:")
     print("----------------------")
-    with open(".wce/comments.json") as comments_file:
-        comments_json = json.load(comments_file)
     for url in comments_json.keys():
         if comments_json[url] == []:
             continue
@@ -77,18 +76,22 @@ def output_results():
     print("\n----------------------")
     print("URLs found:")
     print("----------------------")
-    for url in output['urls']:
+    with open(".wce/urls.json") as urls_file:
+        urls_json = json.load(urls_file)
+    for url in urls_json.keys():
         print('+',url)
     # Forms
+    with open(".wce/forms.json") as forms_file:
+        forms_json = json.load(forms_file)
     print("\n----------------------")
     print("Hidden forms found:")
     print("----------------------")
-    for form in output['hidden_forms']:
+    for form in forms_json.keys():
         print('+',form)
     print("")
 
 class Crawl():
-    #TODO: change self.url if server returns 302 and change allow redirects to True in self.session
+    #TODO: change self.url if server returns 302 and change allow redirects in self.session
     def __init__(self, url, no_forms):
         self.url = url
         self.protocol = url.split('://')[0]
@@ -115,14 +118,22 @@ class Crawl():
     def get_urls(self):
         url_buffer: list = []
         # Gets all <form> urls
+        if not self.no_forms:
+            if os.stat(".wce/forms.json").st_size != 0:
+                with open(".wce/forms.json") as forms_file:
+                    forms_json = json.load(forms_file)
+            else:
+                forms_json = {}
         for form_element in self.soup.find_all('form'):
             form_element_url: str = form_element.get('action')
             if form_element_url not in url_buffer:
                 url_buffer.append(form_element_url)
             # TODO: haven't checked yet if input is hidden or not | store input values and not just URLs
             if not self.no_forms:
-                if form_element_url not in output['hidden_forms']:
-                    output['hidden_forms'].append(form_element_url)
+                if form_element_url not in forms_json:
+                    forms_json[form_element_url] = None
+        with open('.wce/forms.json', 'w') as forms_file:
+            json.dump(forms_json, forms_file)
         # Gets all <a> urls
         for a_element in self.soup.find_all('a'):
             a_element_url: str = a_element.get('href')
@@ -149,9 +160,8 @@ class Crawl():
             if svg_element_url not in url_buffer:
                 url_buffer.append(svg_element_url)
         #TODO: check for more url types
-        # clean url buffer - bad values: None, # 
-        clean_url_buffer = self.get_clean_urls(url_buffer)
-        output['urls']+= clean_url_buffer
+        # cleans urls and adds them to urls.json
+        self.get_clean_urls(url_buffer)
 
     # Format json: parameters={"https://google.com/asd":{"?i=":["asd","sd"],"?sd=":["sdd","qwee","sda"]}}
     def get_parameters(self):
@@ -162,7 +172,9 @@ class Crawl():
         else:
             parameters_json = {}
         # extract parameters and save them to parameters json file
-        for url in output['urls']:
+        with open(".wce/urls.json") as urls_file:
+            urls_json = json.load(urls_file)
+        for url in urls_json.keys():
             if '?' not in url:
                 continue
             clean_url: str = self.get_clean_page(url)
@@ -181,7 +193,9 @@ class Crawl():
             json.dump(parameters_json, parameters_file)
 
     def add_new_urls(self):
-        for url in output['urls']:
+        with open(".wce/urls.json") as urls_file:
+            urls_json = json.load(urls_file)
+        for url in urls_json.keys():
             # doesn't add data urls to urls_list but keeps them in output urls
             if url[:4] == 'data':
                 continue
@@ -192,9 +206,14 @@ class Crawl():
     
     # removes values from a list of urls that could cause errors 
     def get_clean_urls(self, urls):
-        clean_urls: list = []
+        if os.stat(".wce/urls.json").st_size != 0:
+            with open(".wce/urls.json") as urls_file:
+                urls_json = json.load(urls_file)
+        else:
+            urls_json = {}
         for url in urls:
-            # This value is used to check if a URL is good or not | If its true then add url to output['urls'] if not ignore it
+            #TODO: test if URL contains '//' other than protocol's ones
+            # This value is used to check if a URL is good or not | If its true then add url to urls_json if not ignore it
             is_good_url: bool = False
             # Remove None values
             if url == None or url == '':
@@ -226,11 +245,12 @@ class Crawl():
             # url is bad, go to the next one
             if is_good_url == False:
                 continue
-            # if the url is good and its not already in output['urls'] append it
-            if url not in output['urls']:
-                clean_urls.append(url)
-            #TODO: test if URL contains '//' other than protocol's ones
-        return clean_urls
+            # if the url is good and its not already in urls_json, add it as key
+            if url not in urls_json.keys():
+                # for now keep value as None as we dont need it | might need it later
+                urls_json[url] = None
+        with open('.wce/urls.json', 'w') as urls_file:
+            json.dump(urls_json, urls_file)
 
     # Removes parameters and makes sure the URLs are written the same
     def get_clean_page(self, url):

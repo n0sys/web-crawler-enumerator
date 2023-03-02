@@ -51,4 +51,10 @@ if __name__ == "__main__":
         parameters_file.write("")
     with open(".wce/comments.json","w") as comments_file:
         comments_file.write("")
+    with open(".wce/urls.json","w") as urls_file:
+        urls_file.write("")
+    with open(".wce/forms.json","w") as forms_file:
+        forms_file.write("")
+    with open(".wce/idh.json","w") as idh_file:
+        idh_file.write("")
     start(urls, settings)

@@ -18,15 +18,16 @@ def start(urls, settings):
     while True:
         with open(".wce/crawling.json") as crawling_file:
             crawling_json = json.load(crawling_file)
-        # breaks loop
+        # breaks loop if urls_to_visit list is empty
         if not crawling_json['urls_to_visit']:
             break
         url_to_visit = crawling_json['urls_to_visit'][0].strip()
+        print(url_to_visit)
         #TODO: add js web suppport - if site requires js, wont load with requests library
+        #TODO: check response status code
         request = Crawl(url_to_visit,
             settings['no-forms']
             )
-        #TODO: check response status code
         # What to do based on user's request
         if not settings['no-comments']:
             request.get_comments()
@@ -43,4 +44,4 @@ def start(urls, settings):
             request.add_new_urls()
         # Add delay?
         # time.sleep(settings['sleep'])
-    output_results()
+    output_results(settings)

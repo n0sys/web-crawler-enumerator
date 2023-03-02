@@ -42,12 +42,13 @@ class Crawl():
             form_element_url: str = form_element.get('action')
             if form_element_url not in url_buffer:
                 url_buffer.append(form_element_url)
-            # TODO: haven't checked yet if input is hidden or not | store input values and not just URLs
+            # TODO: store input values and not just URLs
             if not self.no_forms:
                 if form_element_url not in forms_json:
                     forms_json[form_element_url] = None
-        with open('.wce/forms.json', 'w') as forms_file:
-            json.dump(forms_json, forms_file)
+        if not self.no_forms:
+            with open('.wce/forms.json', 'w') as forms_file:
+                json.dump(forms_json, forms_file)
         # Gets all <a> urls
         for a_element in self.soup.find_all('a'):
             a_element_url: str = a_element.get('href')

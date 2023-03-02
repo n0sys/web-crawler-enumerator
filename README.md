@@ -6,8 +6,7 @@ Input the URLs you want to search and the tool will output for you the parameter
 
 ## TODO
 - Fix relative urls  
-- Remove global values (to local storage?) 
-- Restructure code
+- Crawl feature: fix get_domains_from_urls returning site URL and not domain
  
 ---
 

@@ -17,7 +17,7 @@ if __name__ == "__main__":
     parser.add_argument('-np', '--no-parameters',action='store_true', help='No parameters would be output')
     parser.add_argument('-nc', '--no-comments',action='store_true', help='No comments would be output')
     #parser.add_argument('-nu', '--no-urls',action='store_true', help='No URLs would be output')
-    parser.add_argument('-nf', '--no-forms',action='store_true', help='No hidden forms would be output')
+    parser.add_argument('-nf', '--no-forms',action='store_true', help='No forms would be output')
     args = parser.parse_args()
 
     if args.url != None and args.file != None:
@@ -31,7 +31,8 @@ if __name__ == "__main__":
         'no-params':args.no_parameters,
         'no-comments':args.no_comments,
         #'no-urls': args.no_urls,
-        'no-forms': args.no_forms}
+        'no-forms': args.no_forms
+        }
     urls: list = []
     if args.url == None:
         urls = args.file.readlines()

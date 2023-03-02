@@ -55,6 +55,6 @@ if __name__ == "__main__":
         urls_file.write("")
     with open(".wce/forms.json","w") as forms_file:
         forms_file.write("")
-    with open(".wce/idh.json","w") as idh_file:
-        idh_file.write("")
+    with open(".wce/crawling.json","w") as crawling_file:
+        crawling_file.write("")
     start(urls, settings)

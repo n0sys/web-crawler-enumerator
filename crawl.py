@@ -7,31 +7,40 @@ import os
 def start(urls, settings): 
     # Define global variables used to store collected data
     # TODO: check local storage for use instead of global vars
-    global urls_list
-    global history
-    global domains
-    domains = []
-    history = []
-    urls_list = urls
-    # Get the domains from user's input and store them in global variable 'domains'
+    crawling_json = {}
+    crawling_json['urls_to_visit'] = urls
+    crawling_json['history'] = []
+    crawling_json['domains'] = []
+    with open('.wce/crawling.json', 'w') as crawling_file:
+        json.dump(crawling_json, crawling_file)
+    # Get the domains from user's input and store them in crawling_json['domains']
     get_domains_from_urls(urls)
-    # Crawl until no new URLs are found
     # TODO: issue in output urls (found when visiting http://localhost/dashboard)
-    while len(urls_list) != 0:
-        request = Crawl(urls_list[0].strip(),
+    # Loop breaks when theres no urls_to_visit in crawling_json
+    while True:
+        with open(".wce/crawling.json") as crawling_file:
+            crawling_json = json.load(crawling_file)
+        # breaks loop
+        if not crawling_json['urls_to_visit']:
+            break
+        url_to_visit = crawling_json['urls_to_visit'][0].strip()
+        #TODO: add js web suppport - if site requires js, wont load with requests library
+        request = Crawl(url_to_visit,
             settings['no-forms']
             )
         #TODO: check response status code
         # What to do based on user's request
         if not settings['no-comments']:
             request.get_comments()
-        #TODO: add js web suppport - if site requires js, wont load with requests library
         request.get_urls()
-        # removes from output values that could cause errors - eg: None value
+        # adds parameters to parameters.json
         if not settings['no-params']:
             request.get_parameters()
-        history.append(urls_list[0].strip())
-        urls_list.pop(0)
+        crawling_json['history'].append(url_to_visit)
+        crawling_json['urls_to_visit'].pop(0)
+        with open('.wce/crawling.json', 'w') as crawling_file:
+            json.dump(crawling_json, crawling_file)
+        # loads crawling.json and checks history before adding new urls to visit
         if settings['crawl']:
             request.add_new_urls()
         # Add delay?
@@ -40,10 +49,14 @@ def start(urls, settings):
 
 # Get the domains from user's input and store them in global variable 'domains'
 def get_domains_from_urls(urls):
+    with open(".wce/crawling.json") as crawling_file:
+        crawling_json = json.load(crawling_file)
     for url in urls:
         domain: str = url.split('/')[2].split('?')[0].split('#')[0]
-        if domain not in domains:
-            domains.append(domain)
+        if domain not in crawling_json['domains']:
+            crawling_json['domains'].append(domain)
+    with open('.wce/crawling.json', 'w') as crawling_file:
+        json.dump(crawling_json, crawling_file)
 
 def output_results():
     # Parameters
@@ -195,14 +208,16 @@ class Crawl():
     def add_new_urls(self):
         with open(".wce/urls.json") as urls_file:
             urls_json = json.load(urls_file)
+        with open(".wce/crawling.json") as crawling_file:
+            crawling_json = json.load(crawling_file)
         for url in urls_json.keys():
-            # doesn't add data urls to urls_list but keeps them in output urls
+            # doesn't add data urls to urls_to_visit but keeps them in output urls
             if url[:4] == 'data':
                 continue
             url_without_parameters = self.get_url_without_parameters(url)
             domain: str = url_without_parameters.split('/')[2]
-            if domain in domains and url_without_parameters not in history and url_without_parameters not in urls_list:
-                urls_list.append(url_without_parameters)
+            if domain in crawling_json['domains'] and url_without_parameters not in crawling_json['history'] and url_without_parameters not in crawling_json['urls_to_visit']:
+                crawling_json['urls_to_visit'].append(url_without_parameters)
     
     # removes values from a list of urls that could cause errors 
     def get_clean_urls(self, urls):

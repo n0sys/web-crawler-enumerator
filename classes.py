@@ -120,6 +120,8 @@ class Crawl():
             domain: str = url_without_parameters.split('/')[2]
             if domain in crawling_json['domains'] and url_without_parameters not in crawling_json['history'] and url_without_parameters not in crawling_json['urls_to_visit']:
                 crawling_json['urls_to_visit'].append(url_without_parameters)
+        with open('.wce/crawling.json', 'w') as crawling_file:
+            json.dump(crawling_json, crawling_file)
     
     # removes values from a list of urls that could cause errors 
     def get_clean_urls(self, urls):

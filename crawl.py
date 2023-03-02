@@ -22,7 +22,6 @@ def start(urls, settings):
         if not crawling_json['urls_to_visit']:
             break
         url_to_visit = crawling_json['urls_to_visit'][0].strip()
-        print(url_to_visit)
         #TODO: add js web suppport - if site requires js, wont load with requests library
         #TODO: check response status code
         request = Crawl(url_to_visit,

@@ -13,20 +13,6 @@ class Crawl():
         self.soup = BeautifulSoup(str(self.session.content), 'html.parser')
         self.no_forms = no_forms
     
-    # TODO: add /* */ comments 
-    def get_comments(self):
-        if os.stat(".wce/comments.json").st_size != 0:
-            with open(".wce/comments.json") as comments_file:
-                comments_json = json.load(comments_file)
-        else:
-            comments_json = {}
-        if self.url not in comments_json:
-            comments_json[self.url] = []
-        for comment in self.soup.find_all(string=lambda text: isinstance(text, Comment)):
-            comments_json[self.url].append(comment.extract())
-        with open('.wce/comments.json', 'w') as comments_file:
-            json.dump(comments_json, comments_file)
-
     # Directly adds urls to json files | Adds urls to urls.json and forms to forms.json
     def get_urls(self):
         url_buffer: list = []
@@ -92,7 +78,20 @@ class Crawl():
         with open('.wce/urls.json', 'w') as urls_file:
             json.dump(urls_json, urls_file)
         
-
+    # TODO: add /* */ comments 
+    def get_comments(self):
+        if os.stat(".wce/comments.json").st_size != 0:
+            with open(".wce/comments.json") as comments_file:
+                comments_json = json.load(comments_file)
+        else:
+            comments_json = {}
+        if self.url not in comments_json:
+            comments_json[self.url] = []
+        for comment in self.soup.find_all(string=lambda text: isinstance(text, Comment)):
+            comments_json[self.url].append(comment.extract())
+        with open('.wce/comments.json', 'w') as comments_file:
+            json.dump(comments_json, comments_file)
+            
     # Format json: parameters={"https://google.com/asd":{"?i=":["asd","sd"],"?sd=":["sdd","qwee","sda"]}}
     def get_parameters(self):
         # if parameters.json is not empty, load content 

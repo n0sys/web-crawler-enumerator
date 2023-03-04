@@ -43,9 +43,10 @@ def start(urls, settings):
         crawling_json['history'].append(url_to_visit)
         # remove visited url from queue
         crawling_json['urls_to_visit'].pop(0)
+        # Save changes to crawling_json
         with open('.wce/crawling.json', 'w') as crawling_file:
             json.dump(crawling_json, crawling_file)
-        # loads crawling.json and checks history before adding new urls to visit
+        # checks history before adding new urls to visit
         if settings['crawl']:
             request.add_new_urls()
     # output the results

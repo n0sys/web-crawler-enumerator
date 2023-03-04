@@ -44,6 +44,7 @@ class Crawl():
                 url_buffer.append(form_element_url)
             # TODO: store input values and not just URLs
             if not self.no_forms:
+                # Store form url in dictionary with None as value (cz not needed for now)
                 if form_element_url not in forms_json:
                     forms_json[form_element_url] = None
         if not self.no_forms:
@@ -162,7 +163,7 @@ class Crawl():
                 url = self.protocol + ':' + url
                 is_good_url = True
             # url is bad, go to the next one
-            if is_good_url == False:
+            if not is_good_url:
                 continue
             # if the url is good and its not already in urls_json, add it as key
             if url not in urls_json.keys():

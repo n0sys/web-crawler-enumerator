@@ -27,6 +27,7 @@ class Crawl():
         with open('.wce/comments.json', 'w') as comments_file:
             json.dump(comments_json, comments_file)
 
+    # Directly adds urls to json files | Adds urls to urls.json and forms to forms.json
     def get_urls(self):
         url_buffer: list = []
         # Gets all <form> urls
@@ -77,8 +78,20 @@ class Crawl():
             if svg_element_url not in url_buffer:
                 url_buffer.append(svg_element_url)
         #TODO: check for more url types
-        # cleans urls and adds them to urls.json
-        self.get_clean_urls(url_buffer)
+        # removes bad values from url_buffer | returns a list of cleaned urls
+        clean_urls: list = self.get_clean_urls(url_buffer)
+        # add urls to urls.json
+        if os.stat(".wce/urls.json").st_size != 0:
+            with open(".wce/urls.json") as urls_file:
+                urls_json = json.load(urls_file)
+        else:
+            urls_json = {}
+        for clean_url in clean_urls:
+            if clean_url not in urls_json.keys():
+                urls_json[clean_url] = None
+        with open('.wce/urls.json', 'w') as urls_file:
+            json.dump(urls_json, urls_file)
+        
 
     # Format json: parameters={"https://google.com/asd":{"?i=":["asd","sd"],"?sd=":["sdd","qwee","sda"]}}
     def get_parameters(self):
@@ -127,11 +140,7 @@ class Crawl():
     
     # removes values from a list of urls that could cause errors
     def get_clean_urls(self, urls):
-        if os.stat(".wce/urls.json").st_size != 0:
-            with open(".wce/urls.json") as urls_file:
-                urls_json = json.load(urls_file)
-        else:
-            urls_json = {}
+        clean_urls: list = []
         for url in urls:
             #TODO: test if URL contains '//' other than protocol's ones
             # This value is used to check if a URL is good or not | If its true then add url to urls_json if not ignore it
@@ -167,11 +176,10 @@ class Crawl():
             if not is_good_url:
                 continue
             # if the url is good and its not already in urls_json, add it as key
-            if url not in urls_json.keys():
+            if url not in clean_urls:
                 # for now keep value as None as we dont need it | might need it later
-                urls_json[url] = None
-        with open('.wce/urls.json', 'w') as urls_file:
-            json.dump(urls_json, urls_file)
+                clean_urls.append(url)
+        return clean_urls
 
     def get_clean_url(self, url):
         #TODO: test if URL contains '//' other than protocol's ones

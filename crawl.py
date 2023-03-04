@@ -19,7 +19,7 @@ def start(urls, settings):
         json.dump(crawling_json, crawling_file)
 
     # TODO: issue in output urls (found when visiting http://localhost/dashboard)
-    # Loop breaks when theres no urls_to_visit in crawling_json
+    # Loop breaks when crawling_json['urls_to_visit'] is empty
     while True:
         with open(".wce/crawling.json") as crawling_file:
             crawling_json = json.load(crawling_file)
@@ -32,20 +32,21 @@ def start(urls, settings):
         request = Crawl(url_to_visit,
             settings['no-forms']
             )
-        # What to do based on user's request
+        request.get_urls()
+        # get comments -nc not specified in run arguments | comments added directly to comments.json
         if not settings['no-comments']:
             request.get_comments()
-        request.get_urls()
-        # adds parameters to parameters.json
+        # get parameters -nc not specified in run arguments | parameters added directly to parameters.json
         if not settings['no-params']:
             request.get_parameters()
+        # add visited url to history to avoid it being visited again later
         crawling_json['history'].append(url_to_visit)
+        # remove visited url from queue
         crawling_json['urls_to_visit'].pop(0)
         with open('.wce/crawling.json', 'w') as crawling_file:
             json.dump(crawling_json, crawling_file)
         # loads crawling.json and checks history before adding new urls to visit
         if settings['crawl']:
             request.add_new_urls()
-        # Add delay?
-        # time.sleep(settings['sleep'])
+    # output the results
     functions.output_results(settings)

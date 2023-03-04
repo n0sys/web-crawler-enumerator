@@ -2,14 +2,11 @@ import json
 
 # Get the domains from user's input and store them in global variable 'domains'
 def get_domains_from_urls(urls):
-    with open(".wce/crawling.json") as crawling_file:
-        crawling_json = json.load(crawling_file)
     for url in urls:
+        domains_list: list = []
         domain: str = url.split('/')[2].split('?')[0].split('#')[0]
-        if domain not in crawling_json['domains']:
-            crawling_json['domains'].append(domain)
-    with open('.wce/crawling.json', 'w') as crawling_file:
-        json.dump(crawling_json, crawling_file)
+        domains_list.append(domain)
+        return domains_list
 
 def output_results(settings):
     # Parameters

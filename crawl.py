@@ -1,6 +1,6 @@
 import json
 from classes import Crawl
-from functions import get_domains_from_urls, output_results
+import functions
 
 def start(urls, settings): 
     # Define global variables used to store collected data
@@ -9,10 +9,15 @@ def start(urls, settings):
     crawling_json['urls_to_visit'] = urls
     crawling_json['history'] = []
     crawling_json['domains'] = []
+
+    # Get the domains from user's input and store them in crawling_json['domains']
+    domains_list = functions.get_domains_from_urls(urls)
+    for domain in domains_list:
+        if domain not in crawling_json['domains']:
+            crawling_json['domains'].append(domain)
     with open('.wce/crawling.json', 'w') as crawling_file:
         json.dump(crawling_json, crawling_file)
-    # Get the domains from user's input and store them in crawling_json['domains']
-    get_domains_from_urls(urls)
+
     # TODO: issue in output urls (found when visiting http://localhost/dashboard)
     # Loop breaks when theres no urls_to_visit in crawling_json
     while True:
@@ -43,4 +48,4 @@ def start(urls, settings):
             request.add_new_urls()
         # Add delay?
         # time.sleep(settings['sleep'])
-    output_results(settings)
+    functions.output_results(settings)

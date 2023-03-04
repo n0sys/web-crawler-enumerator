@@ -9,8 +9,6 @@ class Crawl():
     def __init__(self, url, no_forms):
         self.url = url
         self.protocol = url.split('://')[0]
-        self.domain = self.get_domain_from_url(self.url)
-        self.relative_path = self.get_relative_path_from_url(self.url)
         self.session = requests.get(self.url, timeout=2.5, allow_redirects=False)
         self.soup = BeautifulSoup(str(self.session.content), 'html.parser')
         self.no_forms = no_forms
@@ -45,8 +43,11 @@ class Crawl():
             # TODO: store input values and not just URLs
             if not self.no_forms:
                 # Store form url in dictionary with None as value (cz not needed for now)
-                if form_element_url not in forms_json:
-                    forms_json[form_element_url] = None
+                clean_form_url = self.get_clean_url(form_element_url)
+                if clean_form_url is None:
+                    continue
+                if clean_form_url not in forms_json:
+                    forms_json[clean_form_url] = None
         if not self.no_forms:
             with open('.wce/forms.json', 'w') as forms_file:
                 json.dump(forms_json, forms_file)
@@ -124,7 +125,7 @@ class Crawl():
         with open('.wce/crawling.json', 'w') as crawling_file:
             json.dump(crawling_json, crawling_file)
     
-    # removes values from a list of urls that could cause errors 
+    # removes values from a list of urls that could cause errors
     def get_clean_urls(self, urls):
         if os.stat(".wce/urls.json").st_size != 0:
             with open(".wce/urls.json") as urls_file:
@@ -172,24 +173,34 @@ class Crawl():
         with open('.wce/urls.json', 'w') as urls_file:
             json.dump(urls_json, urls_file)
 
+    def get_clean_url(self, url):
+        #TODO: test if URL contains '//' other than protocol's ones
+        # Remove None values
+        if url == None or url == '':
+            return None
+        # TODO: better solution to detect relative links
+        # adds protocol and domain to relative links
+        # Matches urls that start with \\' This happens when they are written as src='https://'
+        if not re.match("\\\\\'",url) is None:
+            url = url.replace("\\'","")
+        # Matches ../ and ./
+        if not re.match("\.\.?\/", url) is None:
+            url = self.url + url
+        # Matches /directory and not //web
+        if not re.match("\/[^/]", url) is None:
+            url = self.url + url
+        # Matches //
+        if not re.match("\/\/", url) is None:
+            url = self.protocol + ':' + url
+        return url
+
     # Removes parameters and makes sure the URLs are written the same
     def get_clean_page(self, url):
         url_without_parameters = self.get_url_without_parameters(url)
         if url_without_parameters[-1] == '/':
             return url_without_parameters[:-1]
         return url_without_parameters
-       
-    #Get the domain of a given URL
-    def get_domain_from_url(self, url):
-        return url.split('/')[2].split('?')[0].split('#')[0]
 
     #returns the URL without parameters 
     def get_url_without_parameters(self, url):
         return url.split('?')[0].split('#')[0]
-
-    #returns relative path of a url
-    def get_relative_path_from_url(self, url):
-        if url.count("/") < 3:
-            return ""
-        url_list = url.split('/')[3:]
-        return '/'.join(url_list).split('?')[0].split('#')[0]

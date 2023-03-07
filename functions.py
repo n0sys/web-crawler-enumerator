@@ -1,13 +1,28 @@
 import json
+import re
 
-# Get the domains from user's input and store them in global variable 'domains'
+# Get the domains from user's input either a string or a list -> returns a list of domains
 def get_domains_from_urls(urls):
+    input_is_str: bool = False
+    # When passing a string instead of a line
+    if isinstance(urls, str):
+        urls = [urls]
+        input_is_str = True
     for url in urls:
         domains_list: list = []
-        domain: str = url.split('/')[2].split('?')[0].split('#')[0]
+        # stores site address as www.example.come
+        site: str = url.split('/')[2].split('?')[0].split('#')[0]
+        if site == 'localhost':
+            domains_list.append(site)
+            continue
+        # if site is not localhost
+        # reversed the string bcz re matches pattern by search left-to-right 
+        domain: str = re.findall("[^.*]+\.[^.*]+",site[::-1])[0][::-1]
         domains_list.append(domain)
-        return domains_list
-
+    if input_is_str:
+        return domains_list[0]
+    return domains_list
+    
 def output_results(settings):
     # Parameters
     if not settings['no-params']:

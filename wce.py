@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # TODO: find better way to test for URL errors
     for url in urls:
         if re.match('https?\:\/\/[^.]',url) == None:
-            sys.exit('URLs must be in format http(s)://xxxx.xxx')
+            sys.exit('URLs must be in format http(s)://xxxx')
     
     # Initiate local storage directory
     if '.wce' not in os.listdir():

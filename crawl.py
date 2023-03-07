@@ -32,6 +32,7 @@ def start(urls, settings):
         request = Crawl(url_to_visit,
             settings['no-forms']
             )
+        print("Visiting url: "+url_to_visit)
         request.get_urls()
         # get comments -nc not specified in run arguments | comments added directly to comments.json
         if not settings['no-comments']:

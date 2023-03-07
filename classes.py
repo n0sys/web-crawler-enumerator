@@ -3,11 +3,13 @@ from bs4 import BeautifulSoup, Comment
 import re
 import os
 import json
+import functions
+from urllib.parse import unquote
 
 class Crawl():
     #TODO: change self.url if server returns 302 and change allow redirects in self.session
     def __init__(self, url, no_forms):
-        self.url = url
+        self.url = unquote(url)
         self.protocol = url.split('://')[0]
         self.session = requests.get(self.url, timeout=2.5, allow_redirects=False)
         self.soup = BeautifulSoup(str(self.session.content), 'html.parser')
@@ -112,12 +114,17 @@ class Crawl():
                 parameters_json[clean_url] = {}
             for parameter in parameters.split('&'):
                 parameter_split = parameter.split('=')
-                # initiate parameter if it didnt exist in page's dictionary
-                if parameter_split[0] not in parameters_json[clean_url]:
-                    parameters_json[clean_url][parameter_split[0]] = []
-                # add value to the parameter if the value doesnt already exist
-                if parameter_split[1] not in parameters_json[clean_url][parameter_split[0]]:
-                    parameters_json[clean_url][parameter_split[0]].append(parameter_split[1])    
+                try:
+                    key: str = parameter_split[0]
+                    value: str = parameter_split[1]
+                    # initiate the key if it didnt exist in page's dictionary
+                    if key not in parameters_json[clean_url]:
+                        parameters_json[clean_url][key] = []
+                    # add value to the key if the value doesnt already exist
+                    if value not in parameters_json[clean_url][key]:
+                        parameters_json[clean_url][key].append(value) 
+                except IndexError:
+                    pass 
         with open('.wce/parameters.json', 'w') as parameters_file:
             json.dump(parameters_json, parameters_file)
 
@@ -131,7 +138,7 @@ class Crawl():
             if url[:4] == 'data':
                 continue
             url_without_parameters = self.get_url_without_parameters(url)
-            domain: str = url_without_parameters.split('/')[2]
+            domain: str = functions.get_domains_from_urls(url)
             if domain in crawling_json['domains'] and url_without_parameters not in crawling_json['history'] and url_without_parameters not in crawling_json['urls_to_visit']:
                 crawling_json['urls_to_visit'].append(url_without_parameters)
         with open('.wce/crawling.json', 'w') as crawling_file:
@@ -147,6 +154,8 @@ class Crawl():
             # Remove None values
             if url == None or url == '':
                 continue
+            # decode url
+            url = unquote(url)
             # TODO: better solution to detect relative links
             # adds protocol and domain to relative links
             # Matches urls that start with \\' This happens when they are written as src='https://'

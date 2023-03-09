@@ -4,7 +4,6 @@ import functions
 
 def start(urls, settings): 
     # Define global variables used to store collected data
-    # TODO: check local storage for use instead of global vars
     crawling_json = {}
     crawling_json['urls_to_visit'] = urls
     crawling_json['history'] = []

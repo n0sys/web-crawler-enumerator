@@ -174,7 +174,10 @@ class Crawl():
                 is_good_url = True
             # Matches /directory and not //web
             if re.match("\/[^/]", url) != None:
-                url = self.url + url
+                if self.url[-1] == '/':
+                    url = self.url[:-1] + url
+                else:
+                    url = self.url + url
                 is_good_url = True
             # Matches //
             if re.match("\/\/", url) != None:
@@ -190,7 +193,6 @@ class Crawl():
         return clean_urls
 
     def get_clean_url(self, url):
-        #TODO: test if URL contains '//' other than protocol's ones
         # Remove None values
         if url == None or url == '':
             return None

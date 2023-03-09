@@ -5,8 +5,8 @@ WCE is a tool designed to do the first steps of Reconnaissance in Web Penetratio
 Input the URLs you want to search and the tool will output for you the parameters, comments and forms found on these Web pages. You can choose to use the crawl feature as well to ask the script to do web crawling and discover + search other urls found on the pages you input.
 
 ## TODO
-- Fix relative urls  
-- Crawl feature: fix get_domains_from_urls returning site URL and not domain
+- Check site crawling if site on localhost
+- Stop script from visiting images urls
  
 ---
 

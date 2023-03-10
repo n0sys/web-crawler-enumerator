@@ -124,7 +124,7 @@ class Crawl():
                     if value not in parameters_json[clean_url][key]:
                         parameters_json[clean_url][key].append(value) 
                 except IndexError:
-                    pass 
+                    pass
         with open('.wce/parameters.json', 'w') as parameters_file:
             json.dump(parameters_json, parameters_file)
 
@@ -138,6 +138,13 @@ class Crawl():
             if url[:4] == 'data':
                 continue
             url_without_parameters = self.get_url_without_parameters(url)
+            try:
+                extension: str = url_without_parameters.split('/')[-1].split('.')[-1]
+                if extension == 'js' or extension == 'css' or extension == 'txt'\
+                 or extension == 'png' or extension == 'jpg' or extension == 'gif':
+                    continue
+            except IndexError:
+                pass
             domain: str = functions.get_domains_from_urls(url)
             if domain in crawling_json['domains'] and url_without_parameters not in crawling_json['history'] and url_without_parameters not in crawling_json['urls_to_visit']:
                 crawling_json['urls_to_visit'].append(url_without_parameters)

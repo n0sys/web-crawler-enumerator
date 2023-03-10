@@ -34,7 +34,7 @@ if __name__ == "__main__":
         'no-forms': args.no_forms
         }
     urls: list = []
-    if args.url == None:
+    if args.url is None:
         urls = args.file.readlines()
     else:
         urls = [args.url]
@@ -47,15 +47,13 @@ if __name__ == "__main__":
     # Initiate local storage directory
     if '.wce' not in os.listdir():
         os.mkdir('.wce')
-    # Initiate clean parameters.json file 
-    with open(".wce/parameters.json","w") as parameters_file:
-        parameters_file.write("")
-    with open(".wce/comments.json","w") as comments_file:
-        comments_file.write("")
-    with open(".wce/urls.json","w") as urls_file:
-        urls_file.write("")
-    with open(".wce/forms.json","w") as forms_file:
-        forms_file.write("")
-    with open(".wce/crawling.json","w") as crawling_file:
-        crawling_file.write("")
+    # Initialize clean json files 
+    with open(".wce/parameters.json","w") as pf, open(".wce/comments.json","w") as cmf,\
+          open(".wce/urls.json","w") as uf, open(".wce/forms.json","w") as ff,\
+           open(".wce/crawling.json","w") as crf:
+        pf.write("")
+        cmf.write("")
+        uf.write("")
+        ff.write("")
+        crf.write("")
     start(urls, settings)

@@ -49,9 +49,9 @@ def output_results(settings):
         for url in comments_json.keys():
             if comments_json[url] == []:
                 continue
-            print("Comments found in '"+ url + "':")
+            print("[+] "+ url + ":")
             for comment in comments_json[url]:
-                print('[+] '+ comment)
+                print("\t", comment)
     # URLs 
     print("\n----------------------")
     print("URLs found:")

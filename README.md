@@ -26,6 +26,7 @@ options:
 ## TODO
 - Follow redirects
 - Add more info in output for forms
+- Output URLs hierarchicaly
  
 ---
 

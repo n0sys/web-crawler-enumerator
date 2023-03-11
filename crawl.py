@@ -29,17 +29,20 @@ def start(urls, settings):
             url_to_visit = crawling_json['urls_to_visit'][0].strip()
             #TODO: add js web suppport - if site requires js, wont load with requests library
             #TODO: check response status code
+            print("[!] Visiting url: ", url_to_visit)
             request = Crawl(url_to_visit,
                 settings['no-forms']
                 )
-            print("Visiting url: ", url_to_visit)
-            request.get_urls()
-            # get comments if -nc not specified in run arguments | comments added directly to comments.json
-            if not settings['no-comments']:
-                request.get_comments()
-            # get parameters if -np not specified in run arguments | parameters added directly to parameters.json
-            if not settings['no-params']:
-                request.get_parameters()
+            if request.session.status_code == 200:
+                request.get_urls()
+                # get comments if -nc not specified in run arguments | comments added directly to comments.json
+                if not settings['no-comments']:
+                    request.get_comments()
+                # get parameters if -np not specified in run arguments | parameters added directly to parameters.json
+                if not settings['no-params']:
+                    request.get_parameters()
+            else:
+                print("[!] '" + url_to_visit + "' returned status code " + str(request.session.status_code) + " - Not visited")
             # add visited url to history to avoid it being visited again later
             crawling_json['history'].append(url_to_visit)
             # remove visited url from queue
@@ -54,3 +57,5 @@ def start(urls, settings):
         functions.output_results(settings)
     except KeyboardInterrupt:
         functions.output_results(settings)
+    except Exception as e:
+        print("Error:", str(e))

@@ -51,9 +51,9 @@ if __name__ == "__main__":
     with open(".wce/parameters.json","w") as pf, open(".wce/comments.json","w") as cmf,\
           open(".wce/urls.json","w") as uf, open(".wce/forms.json","w") as ff,\
            open(".wce/crawling.json","w") as crf:
-        pf.write("")
-        cmf.write("")
-        uf.write("")
-        ff.write("")
-        crf.write("")
+        pf.write("{}")
+        cmf.write("{}")
+        uf.write("{}")
+        ff.write("{}")
+        crf.write("{}")
     start(urls, settings)

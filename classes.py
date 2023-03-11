@@ -146,7 +146,8 @@ class Crawl():
             except IndexError:
                 pass
             domain: str = functions.get_domains_from_urls(url)
-            if domain in crawling_json['domains'] and url_without_parameters not in crawling_json['history'] and url_without_parameters not in crawling_json['urls_to_visit']:
+            if domain in crawling_json['domains'] and url_without_parameters not in crawling_json['history']\
+             and url_without_parameters not in crawling_json['urls_to_visit']:
                 crawling_json['urls_to_visit'].append(url_without_parameters)
         with open('.wce/crawling.json', 'w') as crawling_file:
             json.dump(crawling_json, crawling_file)

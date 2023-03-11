@@ -32,13 +32,12 @@ def output_results(settings):
         print("Parameters found")
         print("----------------------")
         for url in parameters_json.keys():
-            print("Parameters found for " + url +':')
+            print("Parameters found for '" + url +"':")
             for urls_parameter in parameters_json[url]:
-                print('+ ?' + urls_parameter + '=')
+                print('[+] ?' + urls_parameter + '=' )
                 for urls_parameter_value in parameters_json[url][urls_parameter]:
                     print(urls_parameter_value, end="\t ")
                 print("")
-            print("")
     # Comments
     if not settings['no-comments']:
         with open(".wce/comments.json") as comments_file:
@@ -49,9 +48,9 @@ def output_results(settings):
         for url in comments_json.keys():
             if comments_json[url] == []:
                 continue
-            print("Comments found in "+ url + ':')
+            print("Comments found in '"+ url + "':")
             for comment in comments_json[url]:
-                print('+ '+ comment)
+                print('[+] '+ comment)
     # URLs 
     print("\n----------------------")
     print("URLs found:")
@@ -59,7 +58,7 @@ def output_results(settings):
     with open(".wce/urls.json") as urls_file:
         urls_json = json.load(urls_file)
     for url in urls_json.keys():
-        print('+',url)
+        print('[+]',url)
     # Forms
     if not settings['no-forms']:
         with open(".wce/forms.json") as forms_file:
@@ -68,5 +67,5 @@ def output_results(settings):
         print("Forms found:")
         print("----------------------")
         for form in forms_json.keys():
-            print('+',form)
+            print('[+]',form)
         print("")

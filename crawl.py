@@ -26,7 +26,7 @@ def start(urls, settings):
                 break
             url_to_visit = crawling_json['urls_to_visit'][0].strip()
             #TODO: add js web suppport - if site requires js, wont load with requests library
-            print("[!] Visiting url: ", url_to_visit)
+            print("[+] Visiting url: ", url_to_visit)
             request = Crawl(url_to_visit,
                 settings['no-forms']
                 )

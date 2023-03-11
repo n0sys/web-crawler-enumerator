@@ -7,7 +7,8 @@ import functions
 from urllib.parse import unquote
 
 class Crawl():
-    #TODO: change self.url if server returns 302 and change allow redirects in self.session
+    #TODO: change self.url if server returns 302
+    #TODO: allow redirects in self.session
     def __init__(self, url, no_forms):
         self.url = unquote(url)
         self.protocol = url.split('://')[0]
@@ -200,7 +201,7 @@ class Crawl():
 
     def get_clean_url(self, url):
         # Remove None values
-        if url == None or url == '':
+        if url is None or url == '':
             return None
         # adds protocol and domain to relative links
         # Matches urls that start with \\' This happens when they are written as src='https://'

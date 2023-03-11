@@ -32,7 +32,7 @@ def output_results(settings):
         print("Parameters found")
         print("----------------------")
         for url in parameters_json.keys():
-            print("Parameters found for '" + url +"':")
+            print("'" + url +"':")
             for urls_parameter in parameters_json[url]:
                 print('[+] ?' + urls_parameter + '=' )
                 for urls_parameter_value in parameters_json[url][urls_parameter]:

@@ -16,8 +16,6 @@ def start(urls, settings):
             crawling_json['domains'].append(domain)
     with open('.wce/crawling.json', 'w') as crawling_file:
         json.dump(crawling_json, crawling_file)
-
-    # TODO: issue in output urls (found when visiting http://localhost/dashboard)
     # Loop breaks when crawling_json['urls_to_visit'] is empty
     try:
         while True:
@@ -28,7 +26,6 @@ def start(urls, settings):
                 break
             url_to_visit = crawling_json['urls_to_visit'][0].strip()
             #TODO: add js web suppport - if site requires js, wont load with requests library
-            #TODO: check response status code
             print("[!] Visiting url: ", url_to_visit)
             request = Crawl(url_to_visit,
                 settings['no-forms']

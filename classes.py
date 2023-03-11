@@ -156,7 +156,6 @@ class Crawl():
     def get_clean_urls(self, urls):
         clean_urls: list = []
         for url in urls:
-            #TODO: test if URL contains '//' other than protocol's ones
             # This value is used to check if a URL is good or not | If its true then add url to urls_json if not ignore it
             is_good_url: bool = False
             # Remove None values
@@ -164,7 +163,6 @@ class Crawl():
                 continue
             # decode url
             url = unquote(url)
-            # TODO: better solution to detect relative links
             # adds protocol and domain to relative links
             # Matches urls that start with \\' This happens when they are written as src='https://'
             if re.match("\\\\\'",url) != None:
@@ -204,7 +202,6 @@ class Crawl():
         # Remove None values
         if url == None or url == '':
             return None
-        # TODO: better solution to detect relative links
         # adds protocol and domain to relative links
         # Matches urls that start with \\' This happens when they are written as src='https://'
         if not re.match("\\\\\'",url) is None:

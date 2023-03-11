@@ -5,7 +5,7 @@ WCE is a tool designed to do the first steps of Reconnaissance in Web Penetratio
 Input the URLs you want to search and the tool will output for you the parameters, comments and forms found on these Web pages. You can choose to use the crawl feature as well to ask the script to do web crawling and discover + search other urls found on the pages you input.
 
 ## Installation
-For tests, you can clone the repo and run
+Clone the repo then run
 ```
 $ python3 main.py -u URL
 ```
@@ -13,7 +13,6 @@ $ python3 main.py -u URL
 ## Usage
 The script accepts the following arguments
 ```
-options:
   -h, --help            show this help message and exit
   -u URL, --url URL     Specifies a single URL to scan
   -f FILE, --file FILE  Reads a list of URLs from a text file [each URL on a separate line]

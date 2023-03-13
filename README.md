@@ -26,7 +26,8 @@ The script accepts the following arguments
 - Follow redirects
 - Add more info in output for forms
 - Output URLs hierarchicaly
- 
+- Information gathering from other sources
+
 ---
 
 > Work on this project is still in progress

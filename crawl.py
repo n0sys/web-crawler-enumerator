@@ -2,7 +2,7 @@ import json
 from classes import Crawl
 import functions
 
-def start(urls, settings): 
+def start(urls, settings):
     # Define global variables used to store collected data
     crawling_json = {}
     crawling_json['urls_to_visit'] = urls

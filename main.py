@@ -5,7 +5,6 @@ import os
 from crawl import start
 
 if __name__ == "__main__":
-    #print("""Web Crawler and Enumerator""")
     parser = argparse.ArgumentParser(prog= 'wce', 
             description='Web Enum Made Ez', 
             )

@@ -9,38 +9,15 @@ from urllib.parse import unquote
 class Crawl():
     #TODO: change self.url if server returns 302
     #TODO: allow redirects in self.session
-    def __init__(self, url, no_forms):
+    def __init__(self, url):
         self.url = unquote(url)
         self.protocol = url.split('://')[0]
         self.session = requests.get(self.url, timeout=2.5, allow_redirects=False)
         self.soup = BeautifulSoup(str(self.session.content), 'html.parser')
-        self.no_forms = no_forms
     
-    # Directly adds urls to json files | Adds urls to urls.json and forms to forms.json
+    # Directly adds urls to json files | Adds urls to urls.json 
     def get_urls(self):
         url_buffer: list = []
-        # Gets all <form> urls
-        if not self.no_forms:
-            if os.stat(".wce/forms.json").st_size != 0:
-                with open(".wce/forms.json") as forms_file:
-                    forms_json = json.load(forms_file)
-            else:
-                forms_json = {}
-        for form_element in self.soup.find_all('form'):
-            form_element_url: str = form_element.get('action')
-            if form_element_url not in url_buffer:
-                url_buffer.append(form_element_url)
-            # TODO: store input values and not just URLs
-            if not self.no_forms:
-                # Store form url in dictionary with None as value (cz not needed for now)
-                clean_form_url = self.get_clean_url(form_element_url)
-                if clean_form_url is None:
-                    continue
-                if clean_form_url not in forms_json:
-                    forms_json[clean_form_url] = None
-        if not self.no_forms:
-            with open('.wce/forms.json', 'w') as forms_file:
-                json.dump(forms_json, forms_file)
         # Gets all <a> urls
         for a_element in self.soup.find_all('a'):
             a_element_url: str = a_element.get('href')
@@ -80,7 +57,27 @@ class Crawl():
                 urls_json[clean_url] = None
         with open('.wce/urls.json', 'w') as urls_file:
             json.dump(urls_json, urls_file)
-        
+
+    # searches html for forms and saves results to forms.json
+    def get_forms(self):
+        # Gets all <form> urls
+        if os.stat(".wce/forms.json").st_size != 0:
+            with open(".wce/forms.json") as forms_file:
+                forms_json = json.load(forms_file)
+        else:
+            forms_json = {}
+        for form_element in self.soup.find_all('form'):
+            form_element_url: str = form_element.get('action')
+            # TODO: store input values and not just URLs
+            # Store form url in dictionary with None as value (cz not needed for now)
+            clean_form_url = self.get_clean_url(form_element_url)
+            if clean_form_url is None:
+                continue
+            if clean_form_url not in forms_json:
+                forms_json[clean_form_url] = None
+        with open('.wce/forms.json', 'w') as forms_file:
+            json.dump(forms_json, forms_file)
+
     # TODO: add /* */ comments 
     def get_comments(self):
         if os.stat(".wce/comments.json").st_size != 0:

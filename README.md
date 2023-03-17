@@ -1,16 +1,34 @@
 # Web Crawler and Enumerator
 ## Introduction
-WCE is a tool designed to do the first steps of Reconnaissance in Web Penetration testing. 
+WCE is a tool designed to do the first steps of Enumeration in Web Pentesting.
 
-Input the URLs you want to search and the tool will output for you the parameters, comments and forms found on these Web pages. You can choose to use the crawl feature as well to ask the script to do web crawling and discover + search other urls found on the pages you input.
+Input the URLs you want to search and the tool will output for you the parameters, urls, comments and forms found on these Web pages. 
+
+You can choose to use the crawl feature as well to ask the script to do web crawling and discover + search other urls found on the pages you input.
 
 ## Installation
-Clone the repo then run
+Just clone the repo (could upload it on pypi later)
+```
+$ git clone git@github.com:n0sys/web-crawler-enumerator.git
+```
+
+## Usage
+### Basic
+To search through a single URL just type
 ```
 $ python3 main.py -u URL
 ```
 
-## Usage
+Searching through a list of URLs also supported. Just add the URLs to a file and run
+```
+$ python3 main.py -f FILE
+```
+
+To enable crawling feature add --crawl argument
+```
+$ python3 main.py -u URL --crawl
+```
+
 The script accepts the following arguments
 ```
   -h, --help            show this help message and exit

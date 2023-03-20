@@ -49,4 +49,4 @@ The script accepts the following arguments
 
 ---
 
-> Work on this project is still in progress
+> This branch is used for developping new features and testing  

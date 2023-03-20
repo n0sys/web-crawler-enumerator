@@ -46,12 +46,15 @@ if __name__ == "__main__":
     if '.wce' not in os.listdir():
         os.mkdir('.wce')
     # Initialize clean json files 
-    with open(".wce/parameters.json","w") as pf, open(".wce/comments.json","w") as cmf,\
-          open(".wce/urls.json","w") as uf, open(".wce/forms.json","w") as ff,\
-           open(".wce/crawling.json","w") as crf:
+    with open(".wce/parameters.json","w") as pf:
         pf.write("{}")
+    with open(".wce/comments.json","w") as cmf:
         cmf.write("{}")
+    with open(".wce/urls.json","w") as uf:
         uf.write("{}")
+    with open(".wce/forms.json","w") as ff:
         ff.write("{}")
+    with open(".wce/crawling.json","w") as crf:
         crf.write("{}")
+   
     start(urls, settings)

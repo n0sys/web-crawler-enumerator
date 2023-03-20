@@ -12,6 +12,11 @@ Just clone the repo (could upload it on pypi later)
 $ git clone git@github.com:n0sys/web-crawler-enumerator.git
 ```
 
+Then install dependencies
+```
+$ pip3 install -r requirements.txt
+```
+
 ## Usage
 ### Basic
 To search through a single URL just type
@@ -29,6 +34,7 @@ To enable crawling feature add --crawl argument
 $ python3 main.py -u URL --crawl
 ```
 
+### Arguments
 The script accepts the following arguments
 ```
   -h, --help            show this help message and exit

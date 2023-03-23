@@ -21,17 +21,17 @@ $ pip3 install -r requirements.txt
 ### Basic
 To search through a single URL just type
 ```
-$ python3 main.py -u URL
+$ python3 wce.py -u URL
 ```
 
 Searching through a list of URLs also supported. Just add the URLs to a file and run
 ```
-$ python3 main.py -f FILE
+$ python3 wce.py -f FILE
 ```
 
 To enable crawling feature add --crawl argument
 ```
-$ python3 main.py -u URL --crawl
+$ python3 wce.py -u URL --crawl
 ```
 
 ### Arguments

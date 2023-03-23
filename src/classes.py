@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup, Comment
 import re
 import os
 import json
-import functions
+import src.functions as functions
 from urllib.parse import unquote
 
 class Crawl():

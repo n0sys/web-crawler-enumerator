@@ -2,7 +2,7 @@ import sys
 import argparse
 import re
 import os
-from crawl import start
+from src.crawl import start
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog= 'wce', 

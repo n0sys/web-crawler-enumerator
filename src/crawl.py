@@ -1,6 +1,6 @@
 import json
-from classes import Crawl
-import functions
+from src.classes import Crawl
+import src.functions as functions
 
 def start(urls, settings):
     # Define global variables used to store collected data

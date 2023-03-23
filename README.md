@@ -51,7 +51,9 @@ The script accepts the following arguments
 - Add more info in output for forms
 - Output URLs hierarchicaly
 - Information gathering from other sources
-- Split urls.json between all_urls and new_urls for every iteration of the loop 
+- Login feature
+- Split urls.json between all_urls and new_urls for every iteration of the loop
+- Change code structure 
 
 ---
 

@@ -47,7 +47,6 @@ The script accepts the following arguments
 ```
 
 ## TODO
-- Follow redirects
 - Add more info in output for forms
 - Output URLs hierarchicaly
 - Information gathering from other sources

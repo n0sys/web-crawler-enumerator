@@ -10,10 +10,10 @@ class Crawl():
     #TODO: change self.url if server returns 302
     #TODO: allow redirects in self.session
     def __init__(self, url):
-        self.url = unquote(url)
         self.protocol = url.split('://')[0]
-        self.session = requests.get(self.url, timeout=2.5, allow_redirects=False)
+        self.session = requests.get(unquote(url), timeout=2.5, allow_redirects=True)
         self.soup = BeautifulSoup(str(self.session.content), 'html.parser')
+        self.url = self.session.url
     
     # Directly adds urls to json files | Adds urls to urls.json 
     def get_urls(self):

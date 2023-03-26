@@ -47,13 +47,11 @@ The script accepts the following arguments
 ```
 
 ## TODO
-- Follow redirects
 - Add more info in output for forms
 - Output URLs hierarchicaly
 - Information gathering from other sources
 - Login feature
 - Split urls.json between all_urls and new_urls for every iteration of the loop
-- Change code structure 
 
 ---
 

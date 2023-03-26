@@ -40,7 +40,7 @@ def start(urls, settings):
                 if not settings['no-params']:
                     request.get_parameters()
             else:
-                print("[!] '" + url_to_visit + "' returned status code " + str(request.session.status_code) + " - Not visited")
+                print("[!] '" + request.url + "' returned status code " + str(request.session.status_code) + " - Not visited")
             # add visited url to history to avoid it being visited again later
             crawling_json['history'].append(url_to_visit)
             # remove visited url from queue

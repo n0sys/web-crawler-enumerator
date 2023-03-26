@@ -28,7 +28,7 @@ def start(urls, settings):
             #TODO: add js web suppport - if site requires js, wont load with requests library
             print("[+] Visiting url: ", url_to_visit)
             request = Crawl(url_to_visit)
-            if request.session.status_code >= 200 or request.session.status_code < 400:
+            if request.session.status_code >= 200 and request.session.status_code < 400:
                 request.get_urls()
                 # get forms if -nf not specified in script arguments | forms added directly to forms.json
                 if not settings['no-forms']:
@@ -57,3 +57,4 @@ def start(urls, settings):
         functions.output_results(settings)
     except Exception as e:
         print("Error:", str(e))
+        functions.output_results(settings)

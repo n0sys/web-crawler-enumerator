@@ -52,7 +52,6 @@ The script accepts the following arguments
 - Information gathering from other sources
 - Login feature
 - Split urls.json between all_urls and new_urls for every iteration of the loop
-- Change code structure 
 
 ---
 

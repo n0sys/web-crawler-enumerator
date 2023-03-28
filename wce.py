@@ -16,7 +16,7 @@ if __name__ == "__main__":
     parser.add_argument('-np', '--no-parameters',action='store_true', help='No parameters would be output')
     parser.add_argument('-nc', '--no-comments',action='store_true', help='No comments would be output')
     parser.add_argument('-nf', '--no-forms',action='store_true', help='No forms would be output')
-    parser.add_argument('-d', '--delay', type=float, help='Add delay between requests', default=0)
+    parser.add_argument('-d', '--delay', type=float, help='Add delay between requests (To be used with --crawl option)', default=0)
     args = parser.parse_args()
     # Check args
     if args.url is not None and args.file is not None:

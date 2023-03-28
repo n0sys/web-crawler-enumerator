@@ -1,6 +1,7 @@
 import json
 from src.classes import Crawl
 import src.functions as functions
+import time
 
 def start(urls, settings):
     # Define global variables used to store collected data
@@ -51,6 +52,7 @@ def start(urls, settings):
             # checks history before adding new urls to visit
             if settings['crawl']:
                 request.add_new_urls()
+            time.sleep(settings['delay'])
         # output the results
         functions.output_results(settings)
     except KeyboardInterrupt:

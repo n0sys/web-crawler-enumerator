@@ -37,13 +37,14 @@ $ python3 wce.py -u URL --crawl
 ### Arguments
 The script accepts the following arguments
 ```
-  -h, --help            show this help message and exit
-  -u URL, --url URL     Specifies a single URL to scan
-  -f FILE, --file FILE  Reads a list of URLs from a text file [each URL on a separate line]
-  -c, --crawl           Turns on web crawling, tells the script to enumerate found URLs from same domain
-  -np, --no-parameters  No parameters would be output
-  -nc, --no-comments    No comments would be output
-  -nf, --no-forms       No forms would be output
+  -h, --help                show this help message and exit
+  -u URL, --url URL         Specifies a single URL to scan
+  -f FILE, --file FILE      Reads a list of URLs from a text file [each URL on a separate line]
+  -c, --crawl               Turns on web crawling, tells the script to enumerate found URLs from same domain
+  -np, --no-parameters      No parameters would be output
+  -nc, --no-comments        No comments would be output
+  -nf, --no-forms           No forms would be output
+  -d DELAY, --delay DELAY   Add delay between requests
 ```
 
 ## TODO

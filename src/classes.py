@@ -5,6 +5,7 @@ import os
 import json
 import src.functions as functions
 from urllib.parse import unquote
+from dataclasses import dataclass
 
 class Crawl():
     #TODO: change self.url if server returns 302
@@ -225,3 +226,11 @@ class Crawl():
     #returns the URL without parameters 
     def get_url_without_parameters(self, url):
         return url.split('?')[0].split('#')[0]
+
+@dataclass
+class Settings():
+    crawl: bool
+    no_params: bool
+    no_comments: bool
+    no_forms: bool
+    delay: int

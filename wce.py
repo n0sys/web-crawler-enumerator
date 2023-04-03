@@ -3,6 +3,7 @@ import argparse
 import re
 import os
 from src.crawl import start
+from src.classes import Settings
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog= 'wce', 
@@ -41,17 +42,12 @@ if __name__ == "__main__":
         sys.exit('Error: Delay must only be used with crawl option (--crawl)')
 
     # Creating the settings dict to be passed to the loop
-    settings: dict = {
-        'crawl':args.crawl,
-        'no-params':args.no_parameters,
-        'no-comments':args.no_comments,
-        'no-forms': args.no_forms,
-        'delay': args.delay,
-        }
+    settings = Settings(args.crawl, args.no_parameters, args.no_comments, args.no_forms, args.delay)
+    
     # Initiate local storage directory
     if '.wce' not in os.listdir():
         os.mkdir('.wce')
-    # Initialize clean json files 
+    # Initialize clean json files
     with open(".wce/parameters.json","w") as pf:
         pf.write("{}")
     with open(".wce/comments.json","w") as cmf:

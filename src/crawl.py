@@ -32,13 +32,13 @@ def start(urls, settings):
             if request.session.status_code >= 200 and request.session.status_code < 400:
                 request.get_urls()
                 # get forms if -nf not specified in script arguments | forms added directly to forms.json
-                if not settings['no-forms']:
+                if not settings.no_forms:
                     request.get_forms()
                 # get comments if -nc not specified in script arguments | comments added directly to comments.json
-                if not settings['no-comments']:
+                if not settings.no_comments:
                     request.get_comments()
                 # get parameters if -np not specified in script arguments | parameters added directly to parameters.json
-                if not settings['no-params']:
+                if not settings.no_params:
                     request.get_parameters()
             else:
                 print("[!] '" + request.url + "' returned status code " + str(request.session.status_code) + " - Not visited")
@@ -50,9 +50,9 @@ def start(urls, settings):
             with open('.wce/crawling.json', 'w') as crawling_file:
                 json.dump(crawling_json, crawling_file)
             # checks history before adding new urls to visit
-            if settings['crawl']:
+            if settings.crawl:
                 request.add_new_urls()
-            time.sleep(settings['delay'])
+            time.sleep(settings.delay)
         # output the results
         functions.output_results(settings)
     except KeyboardInterrupt:

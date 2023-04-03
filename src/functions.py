@@ -25,7 +25,7 @@ def get_domains_from_urls(urls):
     
 def output_results(settings):
     # Parameters
-    if not settings['no-params']:
+    if not settings.no_params:
         with open(".wce/parameters.json") as parameters_file:
             parameters_json = json.load(parameters_file)
         print("\n----------------------")
@@ -40,7 +40,7 @@ def output_results(settings):
                     print(urls_parameter_value, end="\t ")
                 print("")
     # Comments
-    if not settings['no-comments']:
+    if not settings.no_comments:
         with open(".wce/comments.json") as comments_file:
             comments_json = json.load(comments_file)
         print("\n----------------------")
@@ -61,7 +61,7 @@ def output_results(settings):
     for url in urls_json.keys():
         print('[+]',url)
     # Forms
-    if not settings['no-forms']:
+    if not settings.no_forms:
         with open(".wce/forms.json") as forms_file:
             forms_json = json.load(forms_file)
         print("\n----------------------")
